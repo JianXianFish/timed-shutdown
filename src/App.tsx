@@ -27,6 +27,8 @@ function App() {
   };
 
   const stopTimer = () => {
+    // 通知主进程停止Tray倒计时
+    window.electronAPI?.stopCountdown();
     setTimerState((prev) => ({
       ...prev,
       isRunning: false,
@@ -35,7 +37,7 @@ function App() {
   };
 
   // 窗口拖动功能 - 只在头部区域
-  const handleHeaderMouseDown = (e: React.MouseEvent) => {
+  const handleHeaderMouseDown = (_e: React.MouseEvent) => {
     // 通知开始拖动
     (window as any).customAPI.publishMainWindowOperateMessage({
       event: "homeDragWindowStart",
@@ -78,8 +80,7 @@ function App() {
         onMouseDown={handleHeaderMouseDown}
       >
         {/* 左侧标题 */}
-        <div className="flex items-center space-x-2">
-        </div>
+        <div className="flex items-center space-x-2"></div>
 
         {/* 右侧主题切换按钮 */}
         <button

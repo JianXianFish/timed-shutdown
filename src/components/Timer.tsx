@@ -18,7 +18,14 @@ const Timer: React.FC<TimerProps> = ({
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    console.log("remainingTime", remainingTime);
     setTimeLeft(remainingTime);
+    // 通知主进程开始Tray倒计时
+    window.electronAPI?.startCountdown(remainingTime);
+    // 立即显示托盘标题
+    setTimeout(() => {
+      window.electronAPI?.updateTrayTitle?.(remainingTime);
+    }, 100);
   }, [remainingTime]);
 
   useEffect(() => {
@@ -43,6 +50,12 @@ const Timer: React.FC<TimerProps> = ({
       return () => clearInterval(timer);
     }
   }, [timeLeft, isPaused]);
+
+  const handleStop = () => {
+    // 通知主进程停止Tray倒计时
+    window.electronAPI?.stopCountdown();
+    onStop();
+  };
 
   const progress = formatProgress(timeLeft, totalTime);
   const isWarning = timeLeft <= 60; // 最后1分钟显示警告
@@ -135,7 +148,7 @@ const Timer: React.FC<TimerProps> = ({
         </button>
 
         <button
-          onClick={onStop}
+          onClick={handleStop}
           className="py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all transform hover:scale-105 active:scale-95"
         >
           <span className="flex items-center justify-center space-x-2">

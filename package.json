@@ -8,8 +8,8 @@
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
     "dev:vite": "vite",
     "dev:electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
-    "build": "vite build",
-    "build:electron": "tsc -p tsconfig.electron.json && vite build && electron-builder",
+    "build:vite": "vite build",
+    "build": "tsc -p tsconfig.electron.json && vite build && electron-builder",
     "preview": "vite preview",
     "dist": "tsc -p tsconfig.electron.json && vite build && cp dist/main.js dist/main.js.bak && cp dist/preload.js dist/preload.js.bak && electron-builder --publish=never",
     "dist:dir": "tsc -p tsconfig.electron.json && vite build && electron-builder --dir"

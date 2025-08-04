@@ -5,6 +5,13 @@ declare global {
   interface Window {
     electronAPI: {
       shutdown: () => Promise<{ success: boolean; error?: string }>;
+      startCountdown: (
+        seconds: number
+      ) => Promise<{ success: boolean; error?: string }>;
+      stopCountdown: () => Promise<{ success: boolean; error?: string }>;
+      updateTrayTitle: (
+        seconds: number
+      ) => Promise<{ success: boolean; error?: string }>;
     };
     customAPI: {
       publishMainWindowOperateMessage: (info: {
@@ -18,6 +25,11 @@ declare global {
 // 暴露安全的 API 到渲染进程
 contextBridge.exposeInMainWorld("electronAPI", {
   shutdown: () => ipcRenderer.invoke("shutdown"),
+  startCountdown: (seconds: number) =>
+    ipcRenderer.invoke("startCountdown", seconds),
+  stopCountdown: () => ipcRenderer.invoke("stopCountdown"),
+  updateTrayTitle: (seconds: number) =>
+    ipcRenderer.invoke("updateTrayTitle", seconds),
 });
 
 contextBridge.exposeInMainWorld("customAPI", {
