@@ -12,6 +12,14 @@ declare global {
       updateTrayTitle: (
         seconds: number
       ) => Promise<{ success: boolean; error?: string }>;
+      getTheme: () => Promise<{
+        success: boolean;
+        theme: string;
+        error?: string;
+      }>;
+      setTheme: (
+        theme: string
+      ) => Promise<{ success: boolean; error?: string }>;
     };
     customAPI: {
       publishMainWindowOperateMessage: (info: {
@@ -30,6 +38,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   stopCountdown: () => ipcRenderer.invoke("stopCountdown"),
   updateTrayTitle: (seconds: number) =>
     ipcRenderer.invoke("updateTrayTitle", seconds),
+  getTheme: () => ipcRenderer.invoke("getTheme"),
+  setTheme: (theme: string) => ipcRenderer.invoke("setTheme", theme),
 });
 
 contextBridge.exposeInMainWorld("customAPI", {

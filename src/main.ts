@@ -9,11 +9,25 @@ import {
 } from "electron";
 import { exec } from "child_process";
 import path from "path";
+import Store from "electron-store";
+
+// 定义 store 的类型
+interface AppStore {
+  theme: string;
+}
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let countdownTimer: NodeJS.Timeout | null = null;
 let remainingSeconds = 0;
+
+// 创建 electron-store 实例用于存储主题
+const store = new Store<AppStore>({
+  name: "app-settings",
+  defaults: {
+    theme: "light",
+  },
+});
 
 // 自定义窗口移动类
 class CustomWindowMove {
@@ -338,6 +352,27 @@ ipcMain.handle("shutdown", async () => {
     return { success: true };
   } catch (error) {
     console.error("关机操作失败:", error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// 主题相关的 IPC 处理器
+ipcMain.handle("getTheme", async () => {
+  try {
+    const theme = store.get("theme", "light") as string;
+    return { success: true, theme };
+  } catch (error) {
+    console.error("获取主题失败:", error);
+    return { success: false, theme: "light", error: (error as Error).message };
+  }
+});
+
+ipcMain.handle("setTheme", async (_event, theme: string) => {
+  try {
+    store.set("theme", theme);
+    return { success: true };
+  } catch (error) {
+    console.error("保存主题失败:", error);
     return { success: false, error: (error as Error).message };
   }
 });

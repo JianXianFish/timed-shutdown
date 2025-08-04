@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Timer from "./components/Timer";
 import TimeInput from "./components/TimeInput";
+import { useTheme } from "./hooks/useTheme";
 
 interface TimerState {
   isRunning: boolean;
@@ -15,7 +16,7 @@ function App() {
     totalTime: 0,
   });
 
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const { isDarkTheme, toggleTheme } = useTheme();
 
   const startTimer = (minutes: number) => {
     const totalSeconds = minutes * 60;
@@ -57,11 +58,6 @@ function App() {
     };
   };
 
-  // 主题切换
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-  };
-
   return (
     <div
       className={`fixed inset-0 flex flex-col ${
@@ -72,7 +68,7 @@ function App() {
     >
       {/* 自定义头部 */}
       <div
-        className={`h-7 flex items-center justify-between px-4 cursor-move ${
+        className={`h-7 flex items-center justify-between px-4 ${
           isDarkTheme
             ? "bg-gray-800 border-b border-gray-700"
             : "bg-white/20 backdrop-blur-sm border-b border-white/30"
